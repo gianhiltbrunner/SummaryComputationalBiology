@@ -13,7 +13,7 @@
 \definecolor{astral}{RGB}{176, 224, 230}
 \definecolor{lred}{HTML}{EFAAAA}
 
-\title{Computational Biology}
+\title{\textbf{Computational Biology}}
 \author{Gian Hiltbrunner}
 \date{January 2020}
 
@@ -21,17 +21,19 @@
 
 \begin{multicols*}{3}
 
-\maketitle
 
+\maketitle
+\vspace{-0.7cm}
 \begin{mdframed}[backgroundcolor=lred] 
     \textbf{Disclaimer}\\
-    Parts of the information provided within this document may be incomplete and/or incorrect.\\For corrections please submit a pull request at:
+    Parts of the information provided within this document may be incomplete and/or incorrect.\\For corrections please submit a pull request to:
     \url{http://github.com/protelescristata/SummaryComputationalBiology}
 \end{mdframed}
 
-\section{Substitution Rate Matrices}
+\section{Models of Molecular Evolution}
+\subsection{Substitution Rate Matrices}
 
-\subsection{JC69}
+\subsubsection{JC69}
 \begin{itemize}
     \item  All substitutions have the same rate $\lambda$
     \item 1 parameter
@@ -41,7 +43,7 @@
     \includegraphics[width=0.5\linewidth]{js69.png}
 \end{center}
 
-\subsection{K80}
+\subsubsection{K80}
 \begin{itemize}
     \item This model differentiates between transitions (T-C/A-G) and transversions. 
     \item 2 parameters
@@ -51,7 +53,7 @@
     \includegraphics[width=0.5\linewidth]{k80.png}
 \end{center}
 
-\subsection{TN93}
+\subsubsection{TN93}
 \begin{itemize}
     \item Transitions between T/C happen with rate $\alpha_1 \times \pi$
     \item Transitions between A/G happen with rate $\alpha_2 \times \pi$
@@ -67,7 +69,7 @@
     \item If $\alpha_1 = \alpha_2$, the model is named \textbf{HKY}
 \end{itemize}
 
-\subsection{GTR - Generalised Time Reversible}
+\subsubsection{GTR - Generalised Time Reversible}
 
 \begin{itemize}
     \item[+] quite flexible
@@ -79,7 +81,7 @@
 \begin{center}
     \includegraphics[width=0.7\linewidth]{GTR.png}
 \end{center}
-\subsection{UNREST}
+\subsubsection{UNREST}
 
 \begin{itemize}
     \item Unrestricted model 
@@ -95,8 +97,8 @@
     \includegraphics[width=0.5\linewidth]{unrest.png}
 \end{center}
 
-\section{Calculating Sequence Distance}
-\subsection{Transition Probability Matrix}
+\subsection{Calculating Sequence Distance}
+\subsubsection{Transition Probability Matrix}
 \label{transprobmat}
 
 Using the substitution rate matrix $Q$ we derive the transition probability matrix $P(t)$, which gives the probabilities of nucleotide $i$ changing to nucleotide $j$ in any time interval $t$.
@@ -111,14 +113,14 @@ $$P(t) = \text{e}^{Qt}$$
     \includegraphics[width=0.7\linewidth]{transitionprobabilitymatrix.png}
 \end{center}
 
-\subsection{Stationary Distribution}
+\subsubsection{Stationary Distribution}
 
 \begin{itemize}
     \item For $t \rightarrow \infty$ we reach a stationary distribution; where the transition probabilities all tend towards $0.25$. 
     \item Any long sequence will thus be composed of equal amounts of T,C,A and G at $t \rightarrow \infty$
 \end{itemize}
 
-\section{Maximum Likelihood Estimators}
+\subsection{Maximum Likelihood Estimators}
 \begin{mdframed}[backgroundcolor=astral] 
     \textbf{Likelihood Function}\\
     Describes a hypersurface whose peak represents the combination of model parameter values that maximize the probability of drawing the obtained sample. 
@@ -138,7 +140,7 @@ $$P(t) = \text{e}^{Qt}$$
     \item We estimate the probability by solving for $p$ and get $p = 0.4 \neq 1/6$
 \end{itemize}
 
-\subsection{Confidence Intervals}
+\subsubsection{Confidence Intervals}
 
 Interval which tries to capture the uncertainty of a parameter estimate. 
 
@@ -156,7 +158,7 @@ Let $X$ be a random variable with a distribution parametrised in $\theta$. Based
     $l(\theta;x) = l(\hat{\theta};x) - 0.5x^2_{k,5\%}$
 \end{itemize}
 
-\subsection{MLE for Sequence Distance}
+\subsubsection{MLE for Sequence Distance}
 The MLE framework can be used to derive a maximum likelihood estimation for the sequence distance under a JC69 model. 
 We have the transition probability matrix as seen in subsection (\ref{transprobmat}) with:
 \begin{align*}
@@ -176,7 +178,7 @@ L(d;x) = {n \choose x} p^{x}(1-p)^{n-x}=\\
 Which gives us the MLE of the JC69 distance: 
 $$\hat{d} = -\frac{3}{4}\log\left(1-\frac{4x}{3n}\right)$$
 
-\subsection{Example of JC69 MLE}
+\subsubsection{Example of JC69 MLE}
 
 \begin{center}
     \includegraphics[width=0.5\linewidth]{mlejc69.png}
@@ -190,11 +192,162 @@ $$\hat{d} = -\frac{3}{4}\log\left(1-\frac{4x}{3n}\right)$$
 $$\hat{d} = -\frac{3}{4}\log\left(1-\frac{4\times 2}{3\times 8}\right) = 0.3$$
 Determine the $95 \%$ confidence interval for the given parameters. 
 
-\section{Variable Substitution Rates}
+\subsection{Variable Substitution Rates}
 
 \begin{itemize}
     \item Not all sites evolve at the same rate
     \item Mutation rates may vary across sites \item The acting selection in the phenotypic level exerts different evolutionary pressure on different sites
 \end{itemize}
+
+\section{Cladistic and ML Inference}
+{\color{red} MISSING CONTENT PP5-6; Here beigins PP7}
+
+\subsection{Searching Tree Space}
+To search the tree space for the maximum likelihood tree we need to propose different trees for evaluation. 
+\begin{itemize}
+    \item We propose different unrooted trees using various defined moves to alter the tree
+    \item We propose trees with different branch lengths; thus we multiply each branch length by some factor
+\end{itemize}
+\textrightarrow We can then use "hill-climbing" strategies to find the ML tree
+
+\subsubsection{Modifying Unrooted Trees}
+
+\begin{itemize}
+    \item \textbf{Nearest-Neighbour Interchange (NNI)}: Swap two subtrees of opposing sides of one branch. 
+    \item \textbf{Suptree Pruning and Regrafting (SPR)}: Remove one random subtree and attach at a random position of the tree.
+    \item \textbf{Branch swapping by tree bisection and reconnection (TBR)}: Cut the tree into two and reconnect at random by selecting branches on both trees and connecting the subtrees between them. 
+\end{itemize}
+
+\subsection{Model Testing}
+
+Here we introduce methods for model selection and assessing the confidence of our parameters. 
+
+\subsubsection{Likelihood Ratio Testing}
+
+\begin{itemize}
+    \item Consider two models: $H_1$ as a general model parameterised in $\theta_0$ and $H_1$ as a nested model parameterised in $\theta_0$.
+    \item Derive the likelihood function for both models and the maximum likelihood estimators $\hat{\theta_0}$ and $\hat{\theta_1}$ for given dataset. 
+    \item Compute if $2(\log L (\hat{\theta_1}) - \log L(\hat{\theta_0}))$ is in the $\alpha$ tail of $x_{df}^2$, then reject the null model $H_0$   
+\end{itemize}
+
+\begin{mdframed}[backgroundcolor=astral] 
+    \textbf{Likelihood Ratio Test}\\
+    Is used to assess the goodness of fit of two models based on the ratio of their likelihoods. One model is found by maximizing the likelihood over the whole parameter space while the other is evaluated under some constraints. If the constraint (hypothesis) is supported by the data the likelihoods should not differ significantly.
+\end{mdframed}
+
+\subsubsection{Testing Non-Nested Models}
+
+\textbf{Akaike Information Criterion (AIC)}: Used for testing non-nested models:
+$$\text{AIC} = -2\log L_i(\hat{\theta}_i) + 2p_i$$
+where $p_i$ is the number of parameters and $L_i$ the likelihood function of model $i$.
+
+\begin{itemize}
+    \item Calculate the AIC for each model
+    \item Choose the model with the lowest AIC; thereby minimizing the Kullback-Leibler distance to the true model  
+\end{itemize}
+
+Rules of thumb for multiple model comparisons: 
+\begin{itemize}
+    \item AIC $\leq$ 1-2 + minimum \textrightarrow substantial support, should receive consideration in inference
+    \item AIC $\leq$ 4-7 + minimum \textrightarrow low support
+    \item AIC $\geq$ 10 + minimum \textrightarrow essentially no support
+\end{itemize}
+
+\subsubsection{Confidence Intervals}
+
+Each parameter value which is not rejected based on the likelihood ratio test at the $0.05$ level is within the $95\%$ interval.
+\textrightarrow Use the strategy as introduced before.
+\begin{itemize}
+    \item Determine the value of the log likelihood function in $\hat{\theta}$: $l(\hat{\theta};x)$
+    \item Calculate $l(\hat{\theta};x) - 0.5x^2_{k,5\%}$; subtract half of the $5\%$ most extreme values according to the $x^2$-distribution
+    \item Determine those $\theta$ values for which the the following holds: 
+    $l(\theta;x) = l(\hat{\theta};x) - 0.5x^2_{k,5\%}$
+\end{itemize}
+
+\subsubsection{Bootstrapping}
+\begin{itemize}
+    \item Sample $m$ sites at random with replacement
+    \item Infer a phylogeny based on the new data
+    \item Repeat this procedure many times 
+\end{itemize}
+
+\begin{center}
+    \includegraphics[width=1\linewidth, angle=0.6]{bootstrapping.png}
+\end{center}
+
+\subsection{Overview of ML Inference}
+
+\begin{enumerate}
+    \item Infer a ML tree 
+    \begin{itemize}
+        \item Felsenstein's pruning algorithm for each tree and branch length
+        \item Choose the tree with branch lengths that optimize the likelihood
+        \item Do this for each substitution model and calculate its AIC
+    \end{itemize}
+    \item Determine the substitution model and tree with highest support using AIC
+    \item Determine the confidence interval for the substitution model parameters based on the likelihood ratios
+    \item Determine the confidence in your maximum likelihood tree using bootstrapping
+\end{enumerate}
+
+\section{Comparative Methods}
+
+\subsection{Comparing Discrete Characters}
+
+Example: We want to know whether eye and hair color are correlated. 
+
+\begin{center}
+    \includegraphics[width=1\linewidth, angle=0.6]{compdischar.png}
+\end{center}
+
+To test whether there is a true correlation we perform Fisher's exact test.\\
+$H_0$: Having brown eyes is equally likely among red- and black-haired individuals.\\
+
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{hair/eyes} & \textbf{brown} & \textbf{blue} \\ \hline
+\textbf{red}       & 0              & 6             \\ \hline
+\textbf{black}     & 4              & 0             \\ \hline
+\end{tabular}
+
+Evaluating the contingency table above yields the following. 
+{
+\footnotesize
+\begin{align*}
+P(red/brown) =& \frac{(RBr\ in\ R)\times (BlBr\ in\ Bl)}{Br\ in\ All}\\
+=& \frac{{6\choose 0}{4\choose 4}}{{10\choose 4}} = 0.0048 < 0.05
+\end{align*}
+}
+Thus we reject the hypothesis of independent character evolution on the 0.05 significance level, indicating that there is a correlation. 
+
+\textbf{Caveat}: We should consider that there may be a bias due to the relatedness of the individuals. Fisher's exact test assumes independence which may not be given here.\\
+
+\subsubsection{Reformulated Fisher's Test}
+
+Thus we reformulate our problem: \textbf{Is the change of characters on the branches correlated?}
+
+\begin{center}
+    \includegraphics[width=1\linewidth, angle=0.6]{compdischarphylo.png}
+\end{center}
+
+$H_{0, new}$: The character changes are equally likely on every branch.\\ 
+
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{hair/eyes} & \textbf{yes} & \textbf{no} \\ \hline
+\textbf{yes}       & 1              & 0             \\ \hline
+\textbf{no}     & 0              & 17             \\ \hline
+\end{tabular}\\
+
+This contingency table summarizes on how many branches we have a change in either the hair color, the eye color or both. Here we have \textbf{one} branch with a change in both and \textbf{17} branches with no change.\\
+
+The probability for one branch on which both the hair and eye color changes ($E$) is under $H_{0, new}$:
+
+\begin{align*}
+    P(E|H_{0,new}) =& \frac{{1\choose 1}{17\choose 0}}{{18\choose 1}} = 0.05555 > 0.05
+\end{align*}
+
+Neglecting the phylogenetic background can lead to false conclusions on correlations between characters, because of non-independence of species data points as a result of shared ancestry. 
+
+
 \end{multicols*}
 \end{document}
