@@ -131,10 +131,10 @@ $$P(t) = \text{e}^{Qt}$$
     Is an estimator of a model parameter that maximises the probability to obtain the observed results.
 \end{mdframed}
 
-\textbf{Example}: Estimate the probability that a die shows side 6. \textrightarrow The die is thrown $n = 100$ times and we obtained a 6 $x = 40$ times. 
+\textbf{Example}: Estimate the probability that a die shows side 6. $\rightarrow$ The die is thrown $n = 100$ times and we obtained a 6 $x = 40$ times. 
 \begin{itemize}
-    \item Define probability of throwing a 6 $x$ times out of $n$ tries \textrightarrow Binomial-distribution, thus: $P = {n\choose x}p^x(1-p)^{n-x}$, where $p$ is the probability of throwing a 6
-    \item We use this probability as our likelihood function and plug in the given values: $L(p;x) = {100\choose 40}p^4^0(1-p)^6^0$
+    \item Define probability of throwing a 6 $x$ times out of $n$ tries $\rightarrow$ Binomial-distribution, thus: $P = {n\choose x}p^x(1-p)^{n-x}$, where $p$ is the probability of throwing a 6
+    \item We use this probability as our likelihood function and plug in the given values: $L(p;x) = {100\choose 40}p^{40}(1-p)^{60}$
     \item To find the maximum likelihood we calculate the first derivative of our likelihood function and set $L' = 0$ to find the maximum. 
     \item Transformations are sometimes applied to the likelihood function. e.g.: $l(p;x) = \log (L(p;x))$
     \item We estimate the probability by solving for $p$ and get $p = 0.4 \neq 1/6$
@@ -208,7 +208,7 @@ To search the tree space for the maximum likelihood tree we need to propose diff
     \item We propose different unrooted trees using various defined moves to alter the tree
     \item We propose trees with different branch lengths; thus we multiply each branch length by some factor
 \end{itemize}
-\textrightarrow We can then use "hill-climbing" strategies to find the ML tree
+$\rightarrow$ We can then use "hill-climbing" strategies to find the ML tree
 
 \subsubsection{Modifying Unrooted Trees}
 
@@ -248,15 +248,15 @@ where $p_i$ is the number of parameters and $L_i$ the likelihood function of mod
 
 Rules of thumb for multiple model comparisons: 
 \begin{itemize}
-    \item AIC $\leq$ 1-2 + minimum \textrightarrow substantial support, should receive consideration in inference
-    \item AIC $\leq$ 4-7 + minimum \textrightarrow low support
-    \item AIC $\geq$ 10 + minimum \textrightarrow essentially no support
+    \item AIC $\leq$ 1-2 + minimum $\rightarrow$ substantial support, should receive consideration in inference
+    \item AIC $\leq$ 4-7 + minimum $\rightarrow$ low support
+    \item AIC $\geq$ 10 + minimum $\rightarrow$ essentially no support
 \end{itemize}
 
 \subsubsection{Confidence Intervals}
 
 Each parameter value which is not rejected based on the likelihood ratio test at the $0.05$ level is within the $95\%$ interval.
-\textrightarrow Use the strategy as introduced before.
+$\rightarrow$ Use the strategy as introduced before.
 \begin{itemize}
     \item Determine the value of the log likelihood function in $\hat{\theta}$: $l(\hat{\theta};x)$
     \item Calculate $l(\hat{\theta};x) - 0.5x^2_{k,5\%}$; subtract half of the $5\%$ most extreme values according to the $x^2$-distribution
