@@ -301,7 +301,7 @@ $\rightarrow$ Use the strategy as introduced before.
 Example: We want to know whether eye and hair color are correlated. 
 
 \begin{center}
-    \includegraphics[width=1\linewidth, angle=0.6]{compdischar.png}
+    \includegraphics[width=1\linewidth, angle=0.0]{compdischar.png}
 \end{center}
 
 To test whether there is a true correlation we perform Fisher's exact test.\\
@@ -331,7 +331,7 @@ Thus we reject the hypothesis of independent character evolution on the 0.05 sig
 Thus we reformulate our problem: \textbf{Is the change of characters on the branches correlated?}
 
 \begin{center}
-    \includegraphics[width=1\linewidth, angle=0.6]{compdischarphylo.png}
+    \includegraphics[width=1\linewidth, angle=0.0]{compdischarphylo.png}
 \end{center}
 
 $H_{0, new}$: The character changes are equally likely on every branch.\\ 
@@ -364,7 +364,7 @@ We now switch our focus from discrete characters (e.g. color) to continuous phen
 We cannot use linear regression models two compare two characters which evolved on a phylogeny as we cannot distinguish between correlations and clade effects. 
 
 \begin{center}
-    \includegraphics[width=1\linewidth, angle=0.6]{phyloregress.png}
+    \includegraphics[width=1\linewidth, angle=0.0]{phyloregress.png}
 \end{center}
 
 When characters evolve on a tree:
@@ -382,7 +382,7 @@ Brownian motion is a Wiener process and thus follows four conditions:
 \begin{itemize}
     \item $W_0$ = 0, the process start in $0$
     \item $W_t$ is almost surely continuous: $P(W_t$ continuous $) = 1$  
-    \item $W_t$ has independant increments (memorylessness): For $0 \seq s_1 \seq t_1 < s_2 \seq t_2$, $(W_{t_1} - W_{s_1})$ and $(W_{t_2} - W_{s_2})$ are independent 
+    \item $W_t$ has independent increments (memorylessness): For $0 \leq s_1 \leq t_1 < s_2 \leq t_2$, $(W_{t_1} - W_{s_1})$ and $(W_{t_2} - W_{s_2})$ are independent 
     \item For $0 \leq s \leq t$, the $W_t - W_s \sim N(0,\sigma^2(t-s))$
 \end{itemize}
 
@@ -400,7 +400,7 @@ There are analogies between models for evolution on discrete and continuous char
 Given a phylogeny we can apply a Brownian motion model to evolve a continuous character. 
 
 \begin{center}
-    \includegraphics[width=1\linewidth, angle=0.6]{brownphyl.png}
+    \includegraphics[width=1\linewidth, angle=0.0]{brownphyl.png}
 \end{center}
 
 \begin{mdframed}[backgroundcolor=astral] 
@@ -417,6 +417,18 @@ Given a phylogeny we can apply a Brownian motion model to evolve a continuous ch
     
     This is fit using a least squares method and the goodness of fit is estimated by $R^2$. An $R^2$ of $1$ indicates a perfect fit. 
 \end{mdframed}
+
+\subsubsection{Constructing Independent Variables}
+
+One method to overcome interdependencies of the evolutionary trait is the contrast method. 
+
+\begin{center}
+    \includegraphics[width=1\linewidth, angle=0.0]{depchar.png}
+\end{center}
+
+\begin{center}
+    \includegraphics[width=1\linewidth, angle=0.0]{indepchar.png}
+\end{center}
 
 \end{multicols*}
 \end{document}
