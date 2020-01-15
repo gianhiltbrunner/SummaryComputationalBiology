@@ -10,6 +10,11 @@
 \usepackage{graphicx}
 \usepackage[landscape=true]{geometry}
 
+ \geometry{
+ left=20mm,
+ right=20mm,
+ }
+
 \definecolor{astral}{RGB}{176, 224, 230}
 \definecolor{lred}{HTML}{EFAAAA}
 
@@ -346,8 +351,72 @@ The probability for one branch on which both the hair and eye color changes ($E$
     P(E|H_{0,new}) =& \frac{{1\choose 1}{17\choose 0}}{{18\choose 1}} = 0.05555 > 0.05
 \end{align*}
 
-Neglecting the phylogenetic background can lead to false conclusions on correlations between characters, because of non-independence of species data points as a result of shared ancestry. 
+Neglecting the phylogenetic background can lead to false conclusions on correlations between characters, because of non-independence of species data points as a result of shared ancestry.\\
 
+Here we do not consider differences in branch length, but these are important as changes are more likely to happen on longer branches. 
+
+\subsection{Comparing Continuous Characters}
+
+We now switch our focus from discrete characters (e.g. color) to continuous phenotypic characters (e.g. height, weight, virulence). 
+
+\subsubsection{Linear Regression on Phylogenies}
+
+We cannot use linear regression models two compare two characters which evolved on a phylogeny as we cannot distinguish between correlations and clade effects. 
+
+\begin{center}
+    \includegraphics[width=1\linewidth, angle=0.6]{phyloregress.png}
+\end{center}
+
+When characters evolve on a tree:
+
+\begin{itemize}
+    \item ...they share common evolutionary history and are not independent realisations
+    \item ...the variance/error added by Brownian motion is not equally distributed 
+\end{itemize}
+
+Thus the prerequisites for linear regression (see: {\color{astral}Linear Regression}) are not given.  
+\subsubsection{Brownian Motion}
+
+Brownian motion is a Wiener process and thus follows four conditions: 
+
+\begin{itemize}
+    \item $W_0$ = 0, the process start in $0$
+    \item $W_t$ is almost surely continuous: $P(W_t$ continuous $) = 1$  
+    \item $W_t$ has independant increments (memorylessness): For $0 \seq s_1 \seq t_1 < s_2 \seq t_2$, $(W_{t_1} - W_{s_1})$ and $(W_{t_2} - W_{s_2})$ are independent 
+    \item For $0 \leq s \leq t$, the $W_t - W_s \sim N(0,\sigma^2(t-s))$
+\end{itemize}
+
+There are analogies between models for evolution on discrete and continuous character space.
+\begin{center}
+    \begin{tabular}{|l|l|}
+\hline
+\textbf{discrete}                                                                         & \textbf{continuous}                                                                   \\ \hline
+\begin{tabular}[c]{@{}l@{}}probability\\ to visit any\\ state\end{tabular}                & \begin{tabular}[c]{@{}l@{}}probability\\ density on \\ state space\end{tabular}       \\ \hline
+\begin{tabular}[c]{@{}l@{}}memory-\\ lessness due\\ to Markov-\\ chain model\end{tabular} & \begin{tabular}[c]{@{}l@{}}memory-\\ lessness due\\ to Brownian\\ motion\end{tabular} \\ \hline
+\begin{tabular}[c]{@{}l@{}}transition\\ probabilities\\ scale with \\ time\end{tabular}   & \begin{tabular}[c]{@{}l@{}}variance\\ scales \\ with \\ branch \\ length\end{tabular} \\ \hline
+\end{tabular}
+\end{center}
+
+Given a phylogeny we can apply a Brownian motion model to evolve a continuous character. 
+
+\begin{center}
+    \includegraphics[width=1\linewidth, angle=0.6]{brownphyl.png}
+\end{center}
+
+\begin{mdframed}[backgroundcolor=astral] 
+    \textbf{Linear Regression}\\
+    Determine dependency of a variable $Y$ in another variable $X$. We measure $Y$ and $X$ for $n$ independent realizations and fit a regression model to the data. The observations need to be:
+    \begin{itemize}
+        \item independent
+        \item have the same (normally) distibuted errors
+    \end{itemize}
+    
+    Then we have the model: 
+    
+    $$y_i = \beta x_i + b + \epsilon, \text{ where } \epsilon \sim N(0, \epsilon^2)$$
+    
+    This is fit using a least squares method and the goodness of fit is estimated by $R^2$. An $R^2$ of $1$ indicates a perfect fit. 
+\end{mdframed}
 
 \end{multicols*}
 \end{document}
