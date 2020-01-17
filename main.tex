@@ -420,15 +420,185 @@ Given a phylogeny we can apply a Brownian motion model to evolve a continuous ch
 
 \subsubsection{Constructing Independent Variables}
 
-One method to overcome interdependencies of the evolutionary trait is the contrast method. 
-
+One method to overcome interdependencies of the evolutionary trait is the contrast method.\\ 
+Suppose we have the following phylogeny with four species; traits $X_1^j$ and $X_2^j$ are not independent as they share the evolutionary lineages $t_6$ and $t_7$.  
 \begin{center}
-    \includegraphics[width=1\linewidth, angle=0.0]{depchar.png}
+    \includegraphics[width=0.6\linewidth, angle=0.0]{depchar.png}
 \end{center}
 
+We now consider the contrasts of the characters instead of the characters. As these are independent. 
+
 \begin{center}
-    \includegraphics[width=1\linewidth, angle=0.0]{indepchar.png}
+    \includegraphics[width=0.6\linewidth, angle=0.0]{indepchar.png}
 \end{center}
 
+We now calculate the values of the independent contrasts and their variances. 
+
+\begin{align*}
+    z^j_{(1,2)} =& x_1^jx_2^j\\
+    z^j_{(6,3)} =& x_6^jx_3^j\\
+    z^j_{(5,4)} =& x_5^jx_4^j
+\end{align*}
+
+We assume \textbf{character evolution according to Brownian motion}. And we consider that we observe tip values but have to estimate values of internal nodes.\\
+
+In order to calculate the variance we apply the following formula.
+
+$$Var[\alpha X + \beta Y] = \alpha ^2 Var[X] + \beta ^2 Var[Y] + 2\alpha \beta Cov[X,Y]$$
+
+The branch length at cherries can easily be calculated. The variance is proportional to the branch length between the two external nodes. 
+
+\begin{align*}
+    Var[X_1^j] = \sigma ^2 (t_1+t_6+t_5)\\
+    Var[X_2^j] = \sigma ^2 (t_2+t_6+t_5)\\\\
+    Var[Z^j_{(1,2)}] = Var[X_1^j-X^j_2] = \\
+    Var[X_1^j] + Var[X_2^j] - 2 Cov[X_1^j,X_2^j]\\
+    = \sigma^2 (t_1+t_6+t_5+t_2+\\t_6+t_5-2(t_6+t_5))\\
+    = \sigma ^2 (t_1 + t_2)
+\end{align*}
+
+\textbf{Contrasts at Internal Nodes}\\
+
+We want to calculate $Z_{(i,l)} = X_i - X_l$ and $Var[Z_{(i,l)}]$
+To calculate the values at the internal nodes we have: 
+
+$$X_i = \frac{t_n}{t_m+t_n}X_m + \frac{t_m}{t_m+t_n}X_n$$
+
+and the corresponding variances: 
+
+\begin{align*}
+Var[X_i] = Var[\frac{t_n}{t_m+t_n}X_m +\\ \frac{t_m}{t_m+t_n}X_n] =\\
+\sigma ^2 \left(\frac{t_mt_n}{t_m+t_n}+ t_i + t_k + ...\right)
+\end{align*}
+
+\textbf{Normalisation of Contrasts}
+To make contrasts comparable to each other they all need to have the same variance. Thus we normalise all contrasts in a last step.\\
+
+Given the contrast $Z^j_{(i,l)}$ with variance $Var[Z^j_{i,l}] = \sigma^2c_{z^j_{(i,l)}}$ we know that $Var(\alpha X) = \alpha ^2 Var(X)$. Thus we can replace the contrasts by the following. 
+
+\begin{align*}
+    Z^j_{(i,l), norm} = \frac{Z^j_{(i,l)}}{\sqrt{c_{z^j_{(i,l)}}}}
+\end{align*}
+
+With $Z^j_{(i,l), norm} \sim N(0, \sigma ^2)$, the contrasts may now be used for linear regression analysis. 
+
+\section{Phylodynamic Inference and Birth Death Models}
+
+Phylodynamic trees encode past macroevolutionary dynamics; in macroevolution are the unit of focus.\\
+We define the following terms.
+\begin{itemize}
+    \item \textbf{Molecular Evolution}: Genetic makeup of species changes trough time 
+    \item \textbf{Phylogenetics}: Phylogeny displays the relationship between species
+    \item \textbf{Phylodynamics}: Dynamics of population; speciation and extinction processes 
+\end{itemize}
+
+In epidemiology we these terms as follows. 
+
+\begin{itemize}
+    \item \textbf{Evolution}: Pathogen is evolving trough time
+    \item \textbf{Phylogenetics}: The phylogeny display the transmission history
+    \item \textbf{Phylodynamics}: Transmission and becoming non-infectious
+\end{itemize}
+
+In this context we look at the basic reproductive number $R_0$, which is the average number of secondary infections caused by a single infected individual.\\
+
+\textbf{Applications}: Phylogenetic modelling is used outside its traditional realm. 
+\begin{itemize}
+    \item \textbf{Immunology}: B cells are the unit of evolution 
+    \begin{itemize}
+        \item Phylogeny displays B cell differentiation trough somatic hypermutation
+        \item Population dynamics are represented by the B cell generation and loss
+    \end{itemize}
+    \item \textbf{Cancer}: Cells are the unit of evolution 
+    \begin{itemize}
+        \item Phylogeny displays relationship of different cancer cells and healthy cells 
+        \item Population dynamics is represented by the spread an loss of cell types 
+    \end{itemize}
+    \item \textbf{Languages}: Languages are the unit of evolution 
+    \begin{itemize}
+        \item Phylogeny displays language evolution
+        \item Population dynamics is the gain and loss of languages
+    \end{itemize}
+\end{itemize}
+
+\subsection{Phylodynamics}
+
+Population dynamics models the birth and death of individuals (species, infected hosts, B cells, cancer cells and languages). Phylodynamics aims to understand and quantify the population dynamics based on a phylogenetic tree. 
+
+\subsubsection{Population Dynamic Models}
+
+We look at a linear birth-death process which models the reproduction and death of individuals with the following simple model. 
+
+\begin{center}
+    \includegraphics[width=0.6\linewidth, angle=0.0]{birthdeath.png}
+\end{center}
+
+\begin{itemize}
+    \item $\beta$: The rate of birth of new individuals per individual in $I$
+    \item $\delta$: The rate of death per individual in $I$
+\end{itemize}
+
+Thus if we consider the fate of one individual we see that. 
+\begin{itemize}
+    \item The probability of giving birth to another individual in a very small time step $\Delta t$ is $\beta \Delta t$.
+    \item The probability of dying in a very small time step $\Delta t$ is $\delta \Delta t$
+    \item The waiting time to the first birth or death event is exponentially distributed with parameter $\beta + \delta$, as the minimum of two exponentially distributed random variables with rates $r_1$, $r_2$ is exponentially distributed with rate ($r_1 + r_2$). 
+\end{itemize}
+
+Thus if we consider the waiting time of $N$ individuals we find that.
+\begin{itemize}
+\item The waiting time of the first event is exponentially distributed with parameter $N(\beta + \delta$
+\end{itemize}
+
+The following diagram illustrates the full population dynamics of a birth-death process which starts with one individual and is stopped after time T. 
+
+\begin{center}
+    \includegraphics[width=1\linewidth, angle=0.0]{bddiagram.png}
+\end{center}
+
+\subsection{Phylodynamic Models}
+
+A phylodynamic model adds a sampling process of individuals to the population dynamics. In a simple model we have the following. 
+
+\begin{itemize}
+    \item Birth rate $\beta$
+    \item Death rate $\delta$
+    \item Process duration $T$
+    \item Extant tip sampling probability $\rho$
+    \item Extinct tip sampling probability $\phi$
+\end{itemize}
+
+
+If we assume $\rho = 1, \phi = 0$ in the context of macro-evolution that means that we do not sample from fossils but only from extant (species still living today) species. The subtree of the complete population tree connecting the sampled individuals and ignoring parent-children labels, is called the phylogenetic tree. This is displayed in the lower part of the following figure, where the parent-child information is removed and only extant species are shown. ($\rho = 1, \phi = 0$) 
+
+
+\begin{center}
+    \includegraphics[width=0.8\linewidth, angle=0.0]{extanttree.png}
+\end{center}
+
+We introduce the lineage trough time (LTT) plot here, it indicates the number of surviving lineages trough time. The dashed blue line is the LTT plot of the complete tree and includes population size trough time while the red line only shows the number of surviving lineages. 
+
+\begin{center}
+    \includegraphics[width=0.8\linewidth, angle=0.0]{ltt.png}
+\end{center}
+
+LTT plots provide a method of estimating parameters of birt death models. The following plot shows a large number of realization of a birth-death model simulation. The simulation was run with $T = 50, \beta > \delta$. If $\beta < \delta$ the population would decrease on average and most trees would rapidly go extinct. We plot the average over all LTT for the phylogenetic trees ({\color{red} red}), the average over all LTT plots for the complete trees ({\color{blue} blue}) and the average total population size over all realizations (complete and extinct trees) (black).
+
+\begin{center}
+    \includegraphics[width=1\linewidth, angle=0.0]{lttavg.png}
+\end{center}
+
+At the start of the complete LTT plot we see an increased slope, this effect is called "push-of-the-past"; the increased slope at the end of the phylogenetic LTT plot is called "pull-of-the-present". 
+
+\begin{itemize}
+    \item \textbf{Average Total Population Size}: The average total population size trough time has the constant slope $\beta - \delta$ on the log scale, corresponding to the average total poulation size of $\text{e}^{(\beta - \delta)t}$ at time $t$.
+    \item \textbf{Complete LTT Plot}: The complete LTT plot goes trough a period of accelerated growth at the beginning of the process, before growing exponentially at rate $\beta - \delta$. This may be explained by the fact that the complete LTT plot only includes populations that survive to the present. Thus we expect populations that grow slowly at the start to be less likely to survive to the end of the process and are thus not included in the complete LTT plot. (push-to-the-past)
+    \item \textbf{Phylogenetic LTT Plot} The phylogenetic LTT plot grows exponentially with rate $\beta - \delta$ until the present when the growth slows to exponential growth with rate $\beta$. This may be explained by the fact that lineages appearing close to the end of the process have less time going extinct and are thus more likely to be sampled.
+\end{itemize}
+
+\section{Coalescent Models}
+\section{Bayesian Inference}
+\section{Phylodynamic Applications}
+\section{Phylogenetic Networks}
 \end{multicols*}
 \end{document}
