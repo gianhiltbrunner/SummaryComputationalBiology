@@ -121,8 +121,8 @@ $$P(t) = \text{e}^{Qt}$$
 \subsubsection{Stationary Distribution}
 
 \begin{itemize}
-    \item For $t \rightarrow \infty$ we reach a stationary distribution; where the transition probabilities all tend towards $0.25$. 
-    \item Any long sequence will thus be composed of equal amounts of T,C,A and G at $t \rightarrow \infty$
+    \item For $t \rightarrow \infty$ we reach a stationary distribution; where the transition probabilities tend towards their equilibrium frequencies.% (all $0.25$ under JC69). 
+    \item Any long sequence will thus be composed of equal amounts of T,C,A and G at $t \rightarrow \infty$ under JC69. %(equilibrium frequency of $0.25$ for all nucleotides).
 \end{itemize}
 
 \subsection{Maximum Likelihood Estimators}
@@ -155,12 +155,12 @@ Interval which tries to capture the uncertainty of a parameter estimate.
 \end{mdframed}
 
 Confidence intervals may be calculated on the basis of likelihood intervals.\\
-Let $X$ be a random variable with a distribution parametrised in $\theta$. Based on collected data $x$ of a huge sample, the maximum likelihood estimation for the parameter is $\hat{\theta}$. Then, $2(l(\hat{\theta} - l(\theta)) \sim x^2_k$
+Let $X$ be a random variable with a distribution parametrised in $\theta$. Based on collected data $x$ of a huge sample, the maximum likelihood estimation for the parameter is $\hat{\theta}$. Then, $2(l(\hat{\theta}) - l(\theta)) \sim \chi^2_k$
 \begin{itemize}
     \item Determine the value of the log likelihood function in $\hat{\theta}$: $l(\hat{\theta};x)$
-    \item Calculate $l(\hat{\theta};x) - 0.5x^2_{k,5\%}$; subtract half of the $5\%$ most extreme values according to the $x^2$-distribution
+    \item Calculate $l(\hat{\theta};x) - 0.5\chi^2_{k,5\%}$; subtract half of the $5\%$ most extreme values according to the $\chi^2$-distribution
     \item Determine those $\theta$ values for which the the following holds: 
-    $l(\theta;x) = l(\hat{\theta};x) - 0.5x^2_{k,5\%}$
+    $l(\theta;x) = l(\hat{\theta};x) - 0.5\chi^2_{k,5\%}$
 \end{itemize}
 
 \subsubsection{MLE for Sequence Distance}
@@ -168,7 +168,7 @@ The MLE framework can be used to derive a maximum likelihood estimation for the 
 We have the transition probability matrix as seen in subsection (\ref{transprobmat}) with:
 \begin{align*}
     p_0(t) = \frac{1}{4} + \frac{3}{4}\text{e}^{-4\lambda t}\\
-    p_1(t) = \frac{1}{4} + \frac{1}{4}\text{e}^{-4\lambda t}
+    p_1(t) = \frac{1}{4} - \frac{1}{4}\text{e}^{-4\lambda t}
 \end{align*}
 For two sequences of length $n$ with $x$ differences the probability that any one position is different is $p = 3p_1(t)$. We define $d = 3\lambda t$ as the expected distance in time $t$ and get for the probability that $x$ out of $n$ positions are different: \begin{align*}
 L(d;x) = {n \choose x} p^{x}(1-p)^{n-x}=\\
@@ -177,7 +177,7 @@ L(d;x) = {n \choose x} p^{x}(1-p)^{n-x}=\\
 \end{align*}
 \begin{itemize}
     \item We compute $l(d;x) = \log(L(d;x))$
-    \item An calculate the first derivative $\hat{d} = l'(d;x)$⁄⁄
+    \item And calculate the first derivative and set it to zero $l'(d;x) = 0$
 \end{itemize}
 
 Which gives us the MLE of the JC69 distance: 
@@ -202,10 +202,68 @@ Determine the $95 \%$ confidence interval for the given parameters.
 \begin{itemize}
     \item Not all sites evolve at the same rate
     \item Mutation rates may vary across sites \item The acting selection in the phenotypic level exerts different evolutionary pressure on different sites
+    \item Extend the existing models by replacing the constant rate by a $\Gamma$-distributed random variable
+\end{itemize}
+
+\subsection{Codon Substitution Models}
+$N_d$ : number of nonsynonymous differences \newline
+$S_d$ : number of synonymous differences (taking into account all possible ways from seq1 to seq2)
+\newline
+$N$ : number of nonsynonymous sites
+\newline
+$S$ : number of synonymous sites
+\begin{itemize}
+    \item Use $\frac{N_d}{N}$ and $\frac{S_d}{S}$ as $p$-distances
+    \item Calculate $d_N$ and $d_S$ with their respective $p$-distance with respect to the chosen substitution model
+    \item $\frac{d_N}{d_S}<1$ implies that nonsynonymous mutations occur less frequently than synonymous mutations (purifying selection)
+    \item $\frac{d_N}{d_S}>1$ implies that nonsynonymous mutations occur more frequently than synonymous mutations (positive selection)
+\end{itemize}
+\section{Sequence Distance}
+t
+\section{Phylogenetic Inference}
+There are three phylogenetic approaches
+\begin{itemize}
+   \item Phenetic approach
+   \newline
+     - Algoritmic approach (e.g. UPGMA algorithm)
+    \newline
+     - Optimality approach (e.g. Least squares methods)
+   \item Cladistic approach
+    \newline
+     - Parsimony approach
+   \item Mechanistic approach
+    \newline
+     - Maximum Likelihood approach
+\end{itemize}
+While phenetic approach give statistically consistent result (true tree returned if infinite amount of data available) cladistic approach is not.
+
+\subsection{Phenetic approach}
+\subsubsection{UPGMA algorithm}
+\begin{itemize}
+    \item Output an ultrametric tree (all sequences must be sampled at the same time)
+    \item Assumes evolution according to a strict molecular clock
+    \item The distances from the UPGMA tree might not be exactly the same as is the distance matrix
+\end{itemize}
+
+\subsubsection{Least squares method}
+\begin{itemize}
+    \item Uses an optimality criterion
+    \item Tries to lower the difference between the distance of two sequences from the tree and the distance matrix
+    \item Needs a tree topology to be proposed and then give the optimal branch lengths given the topology
+\end{itemize}
+
+\subsection{Cladistic approach}
+\subsubsection{Parsimony method}
+\begin{itemize}
+    \item Tries to lower the number of mutations
+    \item Considers every possible unrooted tree given sequences alignment and calculate the parsimony score for each of them
+    \item Output the unrooted tree with minimal parsimony score
+    \item Uses Fitch algorithm to speed up the process
+    \item Statistically inconsistent (because of long branch attraction in the Felsenstein zone)
 \end{itemize}
 
 \section{Cladistic and ML Inference}
-{\color{red} MISSING CONTENT PP5-6; Here beigins PP7}
+{\color{red} MISSING CONTENT PP5-6; Here starts PP7}
 
 \subsection{Searching Tree Space}
 To search the tree space for the maximum likelihood tree we need to propose different trees for evaluation. 
@@ -230,9 +288,9 @@ Here we introduce methods for model selection and assessing the confidence of ou
 \subsubsection{Likelihood Ratio Testing}
 
 \begin{itemize}
-    \item Consider two models: $H_1$ as a general model parameterised in $\theta_0$ and $H_1$ as a nested model parameterised in $\theta_0$.
-    \item Derive the likelihood function for both models and the maximum likelihood estimators $\hat{\theta_0}$ and $\hat{\theta_1}$ for given dataset. 
-    \item Compute if $2(\log L (\hat{\theta_1}) - \log L(\hat{\theta_0}))$ is in the $\alpha$ tail of $x_{df}^2$, then reject the null model $H_0$   
+    \item Consider two models: $H_0$ as a general model parameterised in $\theta_0$ and $H_1$ as a nested model parameterised in $\theta_1$.
+    \item Derive the likelihood function for both models and the maximum likelihood estimators $\hat{\theta}_0$ and $\hat{\theta}_1$ for given dataset. 
+    \item Compute if $2(\log L (\hat{\theta}_1) - \log L(\hat{\theta}_0))$ is in the $\alpha$ tail of $\chi_{df}^2$, then reject the null model $H_0$   
 \end{itemize}
 
 \begin{mdframed}[backgroundcolor=astral] 
@@ -264,9 +322,9 @@ Each parameter value which is not rejected based on the likelihood ratio test at
 $\rightarrow$ Use the strategy as introduced before.
 \begin{itemize}
     \item Determine the value of the log likelihood function in $\hat{\theta}$: $l(\hat{\theta};x)$
-    \item Calculate $l(\hat{\theta};x) - 0.5x^2_{k,5\%}$; subtract half of the $5\%$ most extreme values according to the $x^2$-distribution
+    \item Calculate $l(\hat{\theta};x) - 0.5\chi^2_{k,5\%}$; subtract half of the $5\%$ most extreme values according to the $\chi^2$-distribution
     \item Determine those $\theta$ values for which the the following holds: 
-    $l(\theta;x) = l(\hat{\theta};x) - 0.5x^2_{k,5\%}$
+    $l(\theta;x) = l(\hat{\theta};x) - 0.5\chi^2_{k,5\%}$
 \end{itemize}
 
 \subsubsection{Bootstrapping}
@@ -484,10 +542,10 @@ With $Z^j_{(i,l), norm} \sim N(0, \sigma ^2)$, the contrasts may now be used for
 
 \section{Phylodynamic Inference and Birth Death Models}
 
-Phylodynamic trees encode past macroevolutionary dynamics; in macroevolution are the unit of focus.\\
+Phylodynamic trees encode past macroevolutionary dynamics. \\%; in macroevolution ??? are the unit of focus.\\
 We define the following terms.
 \begin{itemize}
-    \item \textbf{Molecular Evolution}: Genetic makeup of species changes trough time 
+    \item \textbf{Molecular Evolution}: Genetic makeup of species changes through time 
     \item \textbf{Phylogenetics}: Phylogeny displays the relationship between species
     \item \textbf{Phylodynamics}: Dynamics of population; speciation and extinction processes 
 \end{itemize}
@@ -547,7 +605,7 @@ Thus if we consider the fate of one individual we see that.
 
 Thus if we consider the waiting time of $N$ individuals we find that.
 \begin{itemize}
-\item The waiting time of the first event is exponentially distributed with parameter $N(\beta + \delta$
+\item The waiting time of the first event is exponentially distributed with parameter $N(\beta + \delta)$
 \end{itemize}
 
 The following diagram illustrates the full population dynamics of a birth-death process which starts with one individual and is stopped after time T. 
@@ -569,14 +627,14 @@ A phylodynamic model adds a sampling process of individuals to the population dy
 \end{itemize}
 
 
-If we assume $\rho = 1, \phi = 0$ in the context of macro-evolution that means that we do not sample from fossils but only from extant (species still living today) species. The subtree of the complete population tree connecting the sampled individuals and ignoring parent-children labels, is called the phylogenetic tree. This is displayed in the lower part of the following figure, where the parent-child information is removed and only extant species are shown. ($\rho = 1, \phi = 0$) 
+If we assume $\rho = 1$, $\phi = 0$ in the context of macro-evolution that means that we do not sample from fossils but only from extant (species still living today) species. The subtree of the complete population tree connecting the sampled individuals and ignoring parent-children labels, is called the phylogenetic tree. This is displayed in the lower part of the following figure, where the parent-child information is removed and only extant species are shown. %($\rho = 1$, $\phi = 0$). 
 
 
 \begin{center}
     \includegraphics[width=0.8\linewidth, angle=0.0]{extanttree.png}
 \end{center}
 
-We introduce the lineage trough time (LTT) plot here, it indicates the number of surviving lineages trough time. The dashed blue line is the LTT plot of the complete tree and includes population size trough time while the red line only shows the number of surviving lineages. 
+We introduce the lineage through time (LTT) plot here, it indicates the number of surviving lineages trough time. The dashed blue line is the LTT plot of the complete tree and includes population size through time while the red line only shows the number of surviving lineages. 
 
 \begin{center}
     \includegraphics[width=0.8\linewidth, angle=0.0]{ltt.png}
@@ -591,14 +649,434 @@ LTT plots provide a method of estimating parameters of birt death models. The fo
 At the start of the complete LTT plot we see an increased slope, this effect is called "push-of-the-past"; the increased slope at the end of the phylogenetic LTT plot is called "pull-of-the-present". 
 
 \begin{itemize}
-    \item \textbf{Average Total Population Size}: The average total population size trough time has the constant slope $\beta - \delta$ on the log scale, corresponding to the average total poulation size of $\text{e}^{(\beta - \delta)t}$ at time $t$.
-    \item \textbf{Complete LTT Plot}: The complete LTT plot goes trough a period of accelerated growth at the beginning of the process, before growing exponentially at rate $\beta - \delta$. This may be explained by the fact that the complete LTT plot only includes populations that survive to the present. Thus we expect populations that grow slowly at the start to be less likely to survive to the end of the process and are thus not included in the complete LTT plot. (push-to-the-past)
-    \item \textbf{Phylogenetic LTT Plot} The phylogenetic LTT plot grows exponentially with rate $\beta - \delta$ until the present when the growth slows to exponential growth with rate $\beta$. This may be explained by the fact that lineages appearing close to the end of the process have less time going extinct and are thus more likely to be sampled.
+    \item \textbf{Average Total Population Size}: The average total population size through time has the constant slope $\beta - \delta$ on the log scale, corresponding to the average total population size of $\text{e}^{(\beta - \delta)t}$ at time $t$.
+    \item \textbf{Complete LTT Plot}: The complete LTT plot goes through a period of accelerated growth at the beginning of the process, before growing exponentially at rate $\beta - \delta$. This may be explained by the fact that the complete LTT plot only includes populations that survive to the present. Thus we expect populations that grow slowly at the start to be less likely to survive to the end of the process and are thus not included in the complete LTT plot (push-to-the-past).
+    \item \textbf{Phylogenetic LTT Plot} The phylogenetic LTT plot grows exponentially with rate $\beta - \delta$ until the present when the growth accelerates to exponential growth with rate $\beta$. This may be explained by the fact that lineages appearing close to the end of the process have not enough time to go extinct and are thus more likely to be sampled.
+\end{itemize}
+\subsubsection{Parameter Estimation with LTT}
+
+The following figure indicates how the paramters $\beta$ and $\delta$ can be determined from the phylogenetic LTT plot. The stars indicate a branching event at time $t$ with the number of lineages after the event on the $y$-axis. We fit a line to the initial slope and find $\beta - \delta$ and to the recent slope to find $\beta$.\\
+
+\begin{center}
+    \includegraphics[width=1\linewidth, angle=0.0]{lttregression.png}
+\end{center}
+
+However estimating parameters of the birth-death model in this manner is problematic.
+\begin{itemize}
+    \item The variance in the timing of the next branching event (next star) decreases with increasing population size. Thus a classic linear regression assuming the same variance for each data point (homoscedasticity) is not valid. 
+    \item The time transition between the two phases of the curve is unclear. This poses the difficulty of deciding where to place the cutoff between the first and second regression line. 
 \end{itemize}
 
+\subsubsection{Probability Density of a Tree}
+
+We recall that in phylogenetics we calculate the phylogenetic tree by evaluating the following likelihood function. 
+
+$$L(T,Q;D) = P(D|T,Q)$$
+
+Where $T$ is the phylogenetic tree, $Q$ is the substitution rate matrix and $D$ is the sequence alignement.\\
+
+In phylodynamics we want to compute the phylodynamic likelihood which is defined as follows. 
+
+$$L(\eta = (\beta, \delta, T, \rho, \psi, r); T) = P(T|\eta)$$
+
+Where $T$ is the phylogenetic tree and $\eta$ summarizes the birth-death parameters.\\
+
+We use a maximum likelihood approach with assumption of complete extant sampling (no fossil sampling), thus we have $\rho = 1,$ $\psi = 0$. We start by deriving the likelihood of a single individual to leave $0$ or $1$ offspring after time $t$.\\
+
+The probability that no surviving individuals remain after time $t$ if we start with one individual is abbreviated as $p(0|t)$. We consider very small timesteps ($\Delta t$) during which only one event occurs. During this timestep for a single individual a death event happens with probability $\delta \Delta t$ and a birth event happens with probability $\beta \Delta t$. With probability $1-(\beta + \delta)\Delta t$ no event occurs. We derive the differential equation for $p(0|t)$ below. 
+
+\begin{align*}
+    p(0|t+\Delta t) =\\ \underbrace{(1- (\beta + \delta)\Delta t)p(0|t)}_{\text{No event}} + \underbrace{\delta \Delta t}_{\text{Death event}} + \underbrace{\beta \Delta t p (0|t)^2}_{\text{Birth event}}
+\end{align*}
+
+\begin{center}
+    \includegraphics[width=1\linewidth, angle=0.0]{exprob.png}
+\end{center}
+
+The events are derived as follows. 
+
+\begin{itemize}
+    \item \textbf{No event}: We have probability $1-P(\text{Any event happens in time} \ \Delta t)$ that no event occurs in the time step $[0, \Delta t]$, to derive the probability that we have extinction we multiply with the probability of one individual dying out ($p(0|t)$). 
+    \item \textbf{Birth}: We have the probability $\beta \Delta t$ that a birth happens times the probability that both these individuals die out ($p(0|t)^2$). 
+    \item \textbf{Death} We have the probability $\delta \Delta t$ for a death event, in this case the probability for extinction is one as no individual remains. 
+\end{itemize}
+
+We rearrange the equation and get. 
+
+\begin{align*}
+    \frac{p(0|t+\Delta t)-p(0|t)}{\Delta t} =\\
+    -(\beta + \delta)p(0|t) + \delta + \beta p(0|t)^2
+\end{align*}
+
+When we take the limit $\Delta t \rightarrow 0$, the following remains. 
+
+$$\frac{d}{dt}p(0|t) = -(\beta + \delta) p (0|t) + \delta + \beta p(0|t)^2$$
+
+With the initial condition of $p(0|0) = 0$ we solve the differential equation to get this. 
+
+$$p(0|t) = \frac{\delta(1-e^{-(\beta - \delta)t})}{\beta-\delta e^{-(\beta -\delta)t}}$$
+
+We extend the equation to the probability of $n$ surviving lineages after time $t$ and get the following after [Kendall et al., 1948]. 
+
+$$p(1|t) = e^{-(-\beta - \delta)t}(1-p(0|t))^2$$
+$$p(n|t) = p(1|t)\left(\frac{\beta}{\delta}p(0|t)\right)^{n-1}, \text{ for } n\geq 2$$
+
+\textbf{Proof}\\
+
+We prove the equation for $p(1|t)$ and write the following. 
+
+$$\frac{d}{dt}p(1|t) = -(\beta + \delta)p(1|t) + 2\beta p(1|t)p(0|t)$$
+The factor of two accounts for either one of the descendants of the birth event leading to a surviving individual at time $t$.
+We evaluate both sides of the equation using $p(1|t) = e^{-(\beta -\delta)t}(1-p(0|t))^2$, thus showing that this function is a solution to the differential equation.\\
+
+Solving the equation then leads to the following expression. 
+
+$$p(1|t) = (1-p(0|t))(1-\frac{\beta}{\delta}p(0|t))$$
+\subsubsection{Expansion of the Model to a Tree}
+
+We assume that the time in this model is measured as age relative to the present, thus $t = 0$ is the present. We spilt the calculation into multiple sub-problems using dynamic programming. So let $p(x_0, x_1)$ be the probability density for a branch of length $x_0 - x_1$ extending from an individual at time $x_0$ in the past. Then, the probability density of a tree $T$ with age $x_0$ is the following. 
+
+\begin{align*}
+p(T|x_0) = \underbrace{p(x_0,x_1)}_{P(\text{Initial branch})} \underbrace{\beta}_{\text{Branching rate}}\\ \underbrace{p(T_a|x_1)p(T_b|x_1)}_{P(\text{Subtrees})}
+\end{align*}
+
+\begin{center}
+    \includegraphics[width=1\linewidth, angle=0.0]{treepd.png}
+\end{center}
+
+With $p(T|x) = p(T|\rho = (\beta,\delta, T = x))$\\
+
+If we calculate the probability $p(t,x_1)$ density of the branch between $t$ and $x_1$ we get. 
+
+\begin{align*}
+p(t+\Delta t, x_1) = \\(1-(\beta+\delta)\Delta t ) p(t,x_1) + 2\beta \Delta t p(t,x_1) p(0|t)    
+\end{align*}
+
+This leads to the following differential equation. 
+
+\begin{align*}
+    \frac{d}{dt}p(t,x_1) = -(\beta+\delta)p(t,x_1) + 2\beta p(t,x_1)p(0|t)
+\end{align*}
+
+Which is the same differential equation as for $p(1|t)$, but the initial condition differs. Here we have $p(x_1,x_1) = 1$. Thus for the solution we get. 
+
+$$p(x_0,x_1) = p(1|x_0)/p(1|x_1)$$
+
+For a tree of $n$ present day tips, age of the process $X_0$ and branching times $x_1, x_2,...,x_{n-1}$ we have the following probability density. 
+
+\begin{align*}
+p(T|x_0) = p(x_0,x_1)\beta p (T_a|x_1)p(T_b|x_1) =\\ \beta^{n-1} \prod_{i = 0}^{n-1} p (1|x_i)    
+\end{align*}
+
+An analogous strategy provides us with a tree probability density when $\rho < 1$ (indicating incomplete extant sampling) and $\phi > 0$ (sampling through time). 
+
+
 \section{Coalescent Models}
+
+While birth-death models allow the population size to vary stochastically, coalescent models instead treat the population size as a given. Thus the population size itself becomes a target of the inference.\\
+A common assumption is that the underlying population dynamics are deterministic. 
+
+\subsection{Wright-Fisher Process}
+
+Is a model for the propagation of traits in a population of fixed size. It includes discrete generations where each generation consists of $N$ individuals.
+\begin{itemize}
+    \item Each individual in the offspring population chooses its parent uniformly at random from the $N$ parents.
+    \item Thus a given parent has a binomially-distributed number of offspring. 
+    \item For phylogenies of a particular gene, ploidy can be taken into account by multiplying $N$ by a factor which accounts for the number of copies of gene present in each individual. (e.g. for a diploid organism the number of gene copies is $2N$)
+    \item The model assumes distinct non-overlapping generations and each member of a given generation has exactly one parent in the previous generation. 
+    \item What these elements represent depends on the system of study; they might be genes or asexual organisms. \item The selection of the parent is completely random; the Wright-Fisher process is therefore neutral as fitness values are not considered.  
+\end{itemize}
+
+We want to determine the probability that the most recent common ancestor (MRCA) of two samples occurred at $m$ generations before the present. 
+
+We consider the following. 
+
+\begin{itemize}
+    \item Since the parent of each individual is randomly picked, the probability that two individuals in the same generation have the same parent is $\frac{1}{N}$. 
+    \item Thus the probability that two individuals in the same generation do not have a common ancestor in the previous generation is $\left(1-\frac{1}{N}\right)$. 
+\end{itemize}
+
+
+The probability that two sampled individuals first share a common ancestor in the $m^{\text{th}}$ generation before the present is the following. 
+
+\begin{align*}
+P_{\text{MRCA}(m)} = \underbrace{\left(1-\frac{1}{N}\right)^{m-1}}_{\text{No common ancestor in }\atop m - 1 \text{ generations}}\underbrace{\frac{1}{N}}_{\text{Common ancestor in the}\atop m^{\text{th}} \text{ generation}}   
+\end{align*}
+
+This results in a success probability of $1/N$. Since the mean of such a distribution is the inverse of the success probability we must wait on average $N$ generations to see a common ancestor of two samples from a population of size $N$. 
+
+\begin{center}
+    \includegraphics[width=1\linewidth, angle=0.0]{wfphylo.png}
+\end{center}
+
+\subsubsection{Coalescent in Calendar Time}
+
+If $m$ is the number of generations let $g$ be the calendar time of a generation (e.g. 5 days). Therefore we we have the following for the calendar time span of $m$ generations. 
+
+$$\Delta t = gm$$
+
+In calendar time the probability density function for the coalescence of two lineages is the following 
+
+$$pdf(N, \Delta t) = \frac{1}{gN}\text{e}^{-\frac{\Delta t}{gN}}$$
+
+For large $N$ the time limit of the coalescence is exponentially distributed with mean $gN$.\\
+
+If the number of samples $k$ is much smaller than the population size $N$ we have the following probability for a coalesence between any of the ${k\choose 2 }$ pairs. 
+
+$$p_{\text{coal}} \approx {k\choose2}\frac{1}{N}$$
+
+
+\subsection{Kingman's Coalescent}
+
+Is a continuous-time Markov chain which produces time-trees. The process runs backwards in time by successive merging of events known as "coalesence".\\
+
+If $N\gg k$ then it will produce the same tree as the Wright-Fisher model.\\
+
+The times between coalesence events are drawn from an exponential distribution with rate parameters ${k\choose 2}\frac{1}{Ng}$. 
+
+\begin{align*}
+    P(\Delta t|N,g,k) = \exp{\left(-\Delta t {k\choose 2}\frac{1}{Ng}\right)}{k\choose 2}\frac{1}{Ng}
+\end{align*}
+
+We derive the average time for $n$ lineages to coalesce into one.
+
+$$E[t_{root}] = Ng\sum^n_{k = 2}\frac{1}{{N \choose 2}}$$
+
+Thus the mean time until all coalescent events happen is the sum over all probabilities in the tree. 
+
+Coming from the previous equation we write the following. 
+
+$$\sum ^n_{k =2} \frac{1}{{k \choose 2}} = \sum _{k = 2}^n\frac{2}{k(k-1)}$$
+
+We can expand the term $\frac{2}{k(k-1)}$ to $\frac{2}{k-1}-\frac{2}{k}$ and get.
+
+$$\sum _{k = 2}^n\frac{1}{{k \choose 2}} = \sum_{k = 1}^{n-1}\frac{2}{k}- \sum_{k = 2}^{n}\frac{2}{k} = 2(1-\frac{1}{n})$$
+
+Therefore we find that $E[t_{\text{root}}] \rightarrow 2Ng$ as the number of lineages $n$. (i.e. number of leaves in the coalescent tree) becomes large. This is an upper bound on the expectation, while individual coalescent trees can be older than this.\\
+
+\textbf{The Probability of a Coalescent Tree}
+
+We calculate the probability of the following coalescent tree.
+
+\begin{align*}
+    P(T|Ng) = \overbrace{\exp(-\Delta t_1{4 \choose 2}\frac{1}{Ng})}^{\text{Nothing happens}\atop\text{in }\Delta t_i}\times \overbrace{\frac{1}{Ng}}^{\text{Probability of particular}\atop \text{coalescent event}}\times\\ \exp(-\Delta t_2{3 \choose 2}\frac{1}{Ng})\times \frac{1}{Ng} \times\\ \exp(-\Delta t_3{2 \choose 2}\frac{1}{Ng})\times \frac{1}{Ng} = \\
+    \prod_{i = 1}^{n-1}\exp\left(-\Delta t_i  {k_i \choose 2}\frac{1}{Ng}\right)\frac{1}{Ng}
+\end{align*}
+
+\begin{center}
+    \includegraphics[width=1\linewidth, angle=0.0]{coaltree.png}
+\end{center}
+
+\begin{itemize}
+    \item If we take a real tree (inferred from genetic data sampled from a real biological population) and infer population size the result might be biased sine the real dynamics differ from Wright-Fisher dynamics
+    \item Real populations are structured while Wright-Fisher populations are completely homogeneous.
+    \item The coalescent process is often derived as a limit of the Wright-Fisher process as done here and appears as the limit of many other population processes. $\rightarrow$ Thus the coalescent is believed to be fairly robust.  
+\end{itemize}
+
+\textbf{General Assumption of the Coalescent}
+
+\begin{enumerate}
+    \item Samples are members of a population that is at \textbf{demographic equilibrium}, which justifies the use of fixed or slowly varying population sizes. 
+    \item \textbf{Small sample number} compared to the total population size, which justifies the neglection of more than two lineages coalescing at the same time. 
+    \item Populations are \textbf{"well-mixed"}, thus samples are drawn uniformly at random, which justifies the coalescent rate between any pair of sampled lineages being equal. Population structure violates this assumption.
+\end{enumerate}
+
+\textbf{Extension of Population Size Changes}\\
+
+$P(T|N(t))$ is calculated via the rate of coalescence $\frac{1}{N(t)}$, where $N(t)$ is the population size as a function of time $t$. For large population sizes we have a slower coalescence rate.\\
+
+Under a Wright-Fisher model with varying population size the probability of a sampled tree becomes. 
+
+\begin{align*}
+    P(T|N(t)) = \prod _{i = 1}^{n-1}\exp \left(-\int_{t_i}^{t_{i+1}}{k_i \choose 2}\frac{dt}{N(t)g}\right)\frac{1}{Ng}
+\end{align*}
+
+For a given parametric form e.g. $N(t) = N_0\exp(-\gamma t)$ the model yields the likelihood for the given demographic model parameters. This allows us to directly test different demographic scenarios for a given tree.\\
+
+\textbf{Non-parametric Population Dynamics}\\
+We assume that the population has distinct constant sizes in each interval between coalescent events. We can obtain a separate maximum likelihood estimate for each population size. 
+
+\subsection{Coalescent Approximation of Birth-Death Models}
+
+We can develop coalescent distributions that approximate the probability density of sampled phylogenies generated by birth-death processes.\\
+
+We assume that the ODE approximation $I(t) = I(T)\exp((\beta -\delta)(T-t))$ holds. Birth events occur at time $t$ with the rate $\beta I(t)$ where $I$ is the number of individuals. Every birth is a potential coalesence between sampled lineages and the probability of choosing a sampled lineage pair is ${k \choose 2}/{I(t)\choose 2}$ and the approximate coalesence rate is $\beta I(t) \frac{k(k-1)}{I(t)(I(t)-1)}\approx {k \choose 2}\frac{2\beta}{I(t)}$.\\
+
+The quality of the approximation heavily depends on how well birth-death population dynamics are approximated by the deterministic ODE solution. The approximation can perform very poorly if the population size is small, as it is always the case when an epidemic starts. 
+
+\subsection{Comparing Birth-death models to Coalescent Models}
+
+These models are used to probabilistically relate a populations demography to its phylogenetic history. Both allow for inference of demographic and epidemiological parameters but may differ in their parametrization. 
+
+\textbf{Birth-death Models}\\
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Advantages}                                                                                        & \textbf{Disadvantages}                                                                                  \\ \hline
+\begin{tabular}[c]{@{}l@{}}Accounts for\\ stochastic\\ variability in\\ population\\ dynamics\end{tabular} & \begin{tabular}[c]{@{}l@{}}Sensitive to\\ unmodeled \\ changes in \\ sampling \\ fractions\end{tabular} \\ \hline
+\begin{tabular}[c]{@{}l@{}}Easier \\ interpretation of \\ parameters\end{tabular}                          & \begin{tabular}[c]{@{}l@{}}Difficult to \\ extend to\\ complex \\ population \\ models\end{tabular}     \\ \hline
+\begin{tabular}[c]{@{}l@{}}Uses sampling \\ information\end{tabular}                                       &                                                                                                         \\ \hline
+\end{tabular}
+
+\textbf{Coalescent Models}\\
+
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Advantages}                                                                          & \textbf{Disadvantages}                                                                                               \\ \hline
+\begin{tabular}[c]{@{}l@{}}Fast likelihood\\ calculations\end{tabular}                       & \begin{tabular}[c]{@{}l@{}}Sensitive to \\ uncertainty in \\ population \\ dynamics at \\ high sampling\end{tabular} \\ \hline
+\begin{tabular}[c]{@{}l@{}}Easy to extend\\ to complex \\ population\\ dynamics\end{tabular} & \begin{tabular}[c]{@{}l@{}}Sensitive to\\ hidden\\ population \\ structure and \\ nonrandom\\ sampling\end{tabular}  \\ \hline
+\begin{tabular}[c]{@{}l@{}}Accounts \\ naturally for\\ incomplete \\ sampling\end{tabular}   &                                                                                                                      \\ \hline
+\end{tabular}
+
 \section{Bayesian Inference}
+
+There are two main approaches to statistics, the frequentist approach and the Bayesian approach. In a frequentist view we see probabilities as relative frequencies of outcomes of repeatable random experiments (e.g. dice roll). Thus probabilities are only assignable to repeatable experiments and they are treated as an intrinsic property of the system. Furthermore, under this view the inference of model parameters is treated as fundamentally different from the prediction of outcomes.\\
+
+The Bayesian approach on the other hand sees probabilities as plausibilities of propositions conditional on available information. Under this view probabilities are assignable to any unambiguous proposition and they represent a lack of information to predict the outcome with certainty. Here the inference of model parameters is treated in the same way as the prediction of outcomes. 
+
+\subsection{Inference of Genetic Distances}
+
+We have a Jukes-Cantor model for the likelihood of the alignment with $S = 4$ substitutions given the total number of sites $L = 10$ and the distance $d$. 
+
+
+\begin{align*}
+P[S|d,L] =& \left[ \frac{1}{4} + \frac{3}{4}\exp \left(-\frac{4}{3}d\right)\right]^{L-S} \\ \times & \left[ \frac{1}{4} - \frac{1}{4}\exp \left(-\frac{4}{3}d\right)\right]^{S}
+\end{align*}
+
+Thus under our model we can say that the number of segregating sites follows the likelihood $P(S|d,L,M)$. Under a Bayesian viewpoint we can talk about the probability of a certain distance $d$ given the substitutions, the length and the model, thus we have $P(d|S,L,M)$. To find $P(d|S,L,M)$ we use Bayes rule. 
+
+$$P(d|S,L,M) = \frac{P(S|d,L,M)P(d|L,M)}{P(S|L,M)}$$
+
+Where $P(d|L,M)$ quantifies knowledge of $d$ in the absence of the observation $S$. $P(S|L,M)$ is the distribution over possible number of segregating sites $S$ given the JC69 model and any independent $d$.\\
+Here we assume that our prior information is $0\leq d \leq 3$. 
+
+$$    \begin{cases}
+      \frac{1}{3}, & \text{if}\ 0\leq d \leq 3 \\
+      0, & \text{otherwise}
+    \end{cases}$$
+
+This yields a probability distribution with $L_{max} = 0.7$.\\
+
+If new data is acquired we can update this estimate using Bayes. We have a new alignment with $(L' = 90, S' = 48)$. Thus we update our estimate by using the previously calculated posterior as our new prior.\\
+
+\textbf{This is equivalent to inferring $d$ from both data sets simultaneously.}
+
+\begin{center}
+    \includegraphics[width=1\linewidth, angle=0.0]{bayesprior.png}
+\end{center}
+
+\begin{mdframed}[backgroundcolor=astral] 
+    \textbf{Credible Intervals}\\
+    The 95 \% credible interval is an interval of the posterior distribution containing 95 \% of the probability. We ignore the 2.5 \% of the sample on both sides. The interval is often chosen, such that it has the smallest size, this is called the highest posterior density (HPD).
+    
+    \begin{itemize}
+        \item The 95\% HPD can also be found by lowering a threshold density under the curve where the density exceeds the 95 \% threshold. 
+        \item The interval can be interpreted as \textbf{the probability of an unknown value falling into this region is 95 \% given the data.}
+        \item This is different from a 95 \% \textbf{confidence interval} which is the truth-containing interval 95\% of the time when averaging over all possible data sets.  
+    \end{itemize}
+\end{mdframed}
+
+\subsection{Difficulties of Bayesian Inference}
+
+Bayes' Law is given by the following formula. 
+
+$$P(\theta|D,M) = \frac{P(D|\theta,M)P(\theta|M)}{P(D|M)}$$
+
+In practice it is often difficult to determine the denominator $P(D|M)$ of this equation, this term can be seen as a normalizing constant for the posterior distribution. 
+
+$$P(D|M) = \int P(D|\theta,M)P(\theta|M)d\theta$$
+
+This integral is often not numerically solvable if $\theta$ has many dimensions, which is true for most phylogenetic and phylodynamic problems. 
+
+Thus we use Monte Carlo methods. 
+\begin{itemize}
+    \item Algorithms which produce random samples of values in order to characterize a probability distribution. 
+    \item Markov Chain Monte Carlo is an example of such an approach which is used very often for phylogenetic and phylodynamic problems.
+\end{itemize}
+
+$\rightarrow$ See the excellent article on Wikipedia.
+
+\url{https://en.wikipedia.org/wiki/Metropolis-Hastings_algorithm}\\
+
+In Bayesian phylogenetics, we take samples from the posterior distribution in order to characterize the probability distribution of the tree $T$.\\
+
+The MCMC algorithm relies on the use of appropriate proposal distributions that allow the Markov chain to probe the parameter space efficiently.\\
+
+Here we want to calculate the probability of a given tree $\tau$, the substitution model parameters $Q$ and $\eta$ which are the parameters of our phylodynamic model.
+
+$$P(\tau, Q, \eta|A) = \frac{1}{P(A)} P(A|\tau, Q)P(\tau|\eta)P(Q,\eta)$$
+
+$P(\tau|\eta)$ is the prior of our tree and $P(Q,\eta) = P(Q)P(\eta)$ are the parameter prior distributions.\\
+
+This Bayesian approach has the following characteristics. 
+\begin{itemize}
+    \item Joint inference of the phylogenetic tree, the substitution model parameters and the phylodynamic model parameters. 
+    \item Accounts for uncertainty in the tree and in the model parameters. 
+    \item It allows us to include additional sources of information such as constraints on the tree topology.
+    \item The resulting posterior distribution naturally includes the uncertainty. 
+\end{itemize}
+
+Here we assume that sequence evolution is neutral due to way we factorized the joint probability for the tree and the model parameters (Tree generation is separate from sequence evolution).
+
+The MCMC algorithm proposes new state $\tau ', \theta ', \eta '$ based on state $\tau ', \theta ', \eta '$ and evaluates the numerator of Bayes formula. Here the new tree is proposed using tree-space proposal distributions. The other parameters are scalars and can be proposed via random scaling, random walks, etc.\\
+
+$\rightarrow$ Acceptance/Rejection of the new state leads to a set of the accepted states which is s sample from the posterior distribution $P(\tau, Q, \eta|D)$.
+\subsubsection{Tree Space Proposal Distributions}
+
+We want get a proposal distribution from the whole space of rooted time trees. Thus to get the proposal distribution $q_i(\tau'|\tau)$ we generate new random trees using the following methods. 
+
+\begin{center}
+    \includegraphics[width=1\linewidth, angle=0.0]{treeproposal.png}
+\end{center}
+
+\begin{itemize}
+    \item \textbf{Wilson-Balding}: A branch swapping move proposed by WILSON and BALDING 1998 which involves removing a subtree and re-attaching it on a new parent branch
+    \item \textbf{Subtree Exchange}: Two subtrees are randomly swapped. \item \textbf{Uniform Node Height}: Randomly selects true internal tree node (i.e. not the root) and move node height uniformly in interval restricted by the nodes parent and children.
+    \item \textbf{Tree Scaling}: Scale the branch length of a tree proportionately. {\color{red} CONFIRM}
+\end{itemize}
+
 \section{Phylodynamic Applications}
+
+\subsection{Structured Populations}
+
+Populations often have some internal structure such as geographical separation between parts of the population. 
+
+\begin{mdframed}[backgroundcolor=astral] 
+    \textbf{Population Structure}\\
+    A population is structured if its members possess one or more traits (e.g. location, group membership, etc.) that affects their phylodynamic parameters such as birth rate, death rate, sampling rate or coalescence rate. 
+\end{mdframed}
+
+\textbf{Spatial/Geographic Structuring}
+
+Gene flow between subpopulations can be limited due to geographic separation. How strongly this impacts phylodynamic parameters depends on the rate of migration (relative to the local birth rate) between subpopulations.\\
+
+\textbf{Non-spatial Structuring}
+
+Spatially mixed populations can be mixed, this is often the case in pathogen populations which are composed of within-host sub-populations. Some sub-populations may show traits such as drug resistance which have a strong influence on the reproductive success.\\
+
+Individuals of the population may be in different epidemiological states (e.g. exposed vs infectious). \\
+
+Sampled animals may even be members of different species, between which there has been horizontal gene transfer, although this is very rare.\\
+
+\textbf{Population structure can be an important factor in shaping the phylogenetic relationships between samples.}
+
+\begin{center}
+    \includegraphics[width=0.7\linewidth, angle=0.0]{demephylo.png}
+\end{center}
+
+$\rightarrow$ Here the coalesence rate within the demes (a local group of individuals, i.e. from the same taxon, that interbreed with each other and share a gene pool) is much higher than in between the demes.\\
+
+If one fails to account for such structure there is a risk that the results will be biased. We can use structure aware phylodynamic models to account for such biases. 
+
+Incorporating structure into phylodynamic models also allows us to directly address questions relating to population structure. We can consider questions regarding the migration rate between islands or find information regarding the sizes of sub-populations. Even questions about when a disease entered a geographic location can be answered. 
+
+\textbf{Example}
+
+Consider a population of individuals of which some are sensitive to some drug and others are not. When sampling from the population we do not know about the history of the lineages but only about their current resistance status. Thus if we reconstruct the tree, the history of how the resistance was transmitted will be missing. However if we find many clustered leaves then it is very likely that the drug resistance was transmitted; if the resistance occurred de-novo many times then drug-resistant and drug-sensitive tips will be mixed. 
+
+\subsection{Structured Birth-Death Models}
+
+We extend the birth-death model to include individuals of different types and transitions between them. 
+
 \section{Phylogenetic Networks}
 \end{multicols*}
 \end{document}
